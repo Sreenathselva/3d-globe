@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="hologram/style.css">
+  <link rel="stylesheet" href="hologram/carousel.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   <style>
     body { margin:0; background:black; }
@@ -141,6 +142,7 @@
       <img src="images/logos/nigeria/suzuki-12.svg" alt="">
     </div>
   </div>
+
     <div class="country-boxes hidden" data-place="india">
     <div class="country-box">
       <img src="images/logos/nigeria/kia-4.svg" alt="">
@@ -161,13 +163,20 @@
       <img src="images/logos/nigeria/suzuki-12.svg" alt="">
     </div>
   </div>
+
+
 </div>
 
   <script src="../miniature.earth.core.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="script/index.js"></script>
+  <script src="script/carousel.js"></script>
+  <script src="script/region-handler.js"></script>
   <script>
-
+    // Initialize the image carousel for India section
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCountryBoxImages('india');
+    });
   </script>
 </body>
 </html>
