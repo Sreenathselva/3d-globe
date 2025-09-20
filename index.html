@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Globe with Country Carousel</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="hologram/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <style>
+    body { margin:0; background:black; }
+    #myearth { width:100vw; height:100vh; }
+  </style>
+</head>
+<body>
+	<div class="header">
+		<h1 class="heading">Our Presence</h1>
+		<h2 class="sub-heading">Our global collaborations</h2>
+	</div>
+  <div id="myearth">
+    <!-- <div id="glow"></div> -->
+  </div>
+  <div class="swiper" id="vertical-swiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide s1"><a href="#" class="regions" data-region="asia"><span>ASIA</span></a></div>
+      <div class="swiper-slide s2"><a href="#" class="regions" data-region="europe"><span>EUROPE</span></a></div>
+      <div class="swiper-slide s3"><a href="#" class="regions" data-region="northamerica"><span>NORTH AMERICA</span></a></div>
+      <div class="swiper-slide s3"><a href="#" class="regions" data-region="southamerica"><span>SOUTH AMERICA</span></a></div>
+      <div class="swiper-slide s4"><a href="#" class="regions" data-region="africa"><span>AFRICA</span></a></div>
+      <div class="swiper-slide s1"><a href="#" class="regions" data-region="asia"><span>ASIA</span></a></div>
+      <div class="swiper-slide s2"><a href="#" class="regions" data-region="europe"><span>EUROPE</span></a></div>
+      <div class="swiper-slide s3"><a href="#" class="regions" data-region="northamerica"><span>NORTH AMERICA</span></a></div>
+      <div class="swiper-slide s3"><a href="#" class="regions" data-region="southamerica"><span>SOUTH AMERICA</span></a></div>
+      <div class="swiper-slide s4"><a href="#" class="regions" data-region="africa"><span>AFRICA</span></a></div>
+      
+    </div>
+	<!-- <div id="countries">
+		<div class="country-head">
+			<div class="heading">OUR PRESENCE</div>
+			<div class="sub-head">INDIA</div>
+		</div>
+		<div class="places"></div>
+	</div> -->
+    <!-- Optional pagination -->
+    <div class="swiper-pagination"></div>
+  </div>
+
+<!-- Asia Swiper -->
+<div class="swiper hidden" id="asia-swiper">
+  <img src="images/back-btn.svg" alt="" class="back-btn">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide"><a href="" class="country"><span>India</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>China</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Japan</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>South Korea</span> </a> </div>
+    <div class="swiper-slide"><a href="" class="country"><span>Vietnam</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Thailand</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Nepal</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Sri Lanka</span> </a> </div>
+  </div>
+</div>
+
+<!-- Europe Swiper -->
+<div class="swiper hidden" id="europe-swiper">
+  <img src="images/back-btn.svg" alt="" class="back-btn">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide"><a href="" class="country"><span>France</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Germany</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Italy</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Spain</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>United Kingdom</span></a> </div>
+    <div class="swiper-slide"><a href="" class="country"><span>Poland</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Netherlands</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Greece</span></a></div>
+  </div>
+</div>
+
+<!-- North America Swiper -->
+<div class="swiper hidden" id="northamerica-swiper">
+  <img src="images/back-btn.svg" alt="" class="back-btn">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide"><a href="" class="country"><span>USA</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Canada</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Mexico</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Cuba</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Jamaica</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Panama</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Costa Rica</span></a> </div>
+    <div class="swiper-slide"><a href="" class="country"><span>Haiti</span></a></div>
+  </div>
+</div>
+
+<!-- Africa Swiper -->
+<div class="swiper hidden" id="africa-swiper">
+  <img src="images/back-btn.svg" alt="" class="back-btn">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide"><a href="" class="country"><span>Nigeria</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>South Africa</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Egypt</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Kenya</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Ghana</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Tanzania</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Morocco</span></a></div>
+    <div class="swiper-slide"><a href="" class="country"><span>Uganda</span></a></div>
+  </div>
+</div>
+<div class="swiper hidden" id="southamerica-swiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><a href="" class="country"><span>Brazil</span></a></div>
+      <div class="swiper-slide"><a href="" class="country"><span>Argentina</span></a></div>
+      <div class="swiper-slide"><a href="" class="country"><span>Chile</span></a></div>
+      <div class="swiper-slide"><a href="" class="country"><span>Peru</span></a></div>
+      <div class="swiper-slide"><a href="" class="country"><span>Colombia</span></a></div>
+      <div class="swiper-slide"><a href="" class="country"><span>Venezuela</span></a></div>
+      <div class="swiper-slide"><a href="" class="country"><span>Ecuador</span></a></div>
+      <div class="swiper-slide"><a href="" class="country"><span>Bolivia</span></a></div>
+    </div>
+  <img src="images/back-btn.svg" alt="" class="back-btn">
+  </div>
+
+<div id="countries" class="hidden">
+  <h2>OUR PRESENCE</h2>
+  <img src="images/back-btn.svg" alt="" class="logo-back-btn">
+  <div class="country-boxes hidden" data-place="nigeria">
+    <div class="country-box">
+      <img src="images/logos/nigeria/kia-4.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/kuschel-rock-12.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/lamborghini.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/lightroom-cc.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/rolling-rock-2.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/suzuki-12.svg" alt="">
+    </div>
+  </div>
+    <div class="country-boxes hidden" data-place="india">
+    <div class="country-box">
+      <img src="images/logos/nigeria/kia-4.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/kia-4.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/kia-4.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/kia-4.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/rolling-rock-2.svg" alt="">
+    </div>
+    <div class="country-box">
+      <img src="images/logos/nigeria/suzuki-12.svg" alt="">
+    </div>
+  </div>
+</div>
+
+  <script src="../miniature.earth.core.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="script/index.js"></script>
+  <script>
+
+  </script>
+</body>
+</html>

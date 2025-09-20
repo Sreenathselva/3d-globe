@@ -1,0 +1,273 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background: #000000;
+	color: white;
+	font-family: sans-serif;
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden;
+}
+h1,h2,h3,h4,h5,h6{
+	margin: 0;
+	padding: 0;
+}
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Comfortaa:wght@300..700&family=Figtree:ital,wght@0,300..900;1,300..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+a{
+	text-decoration: none;
+}
+@font-face {
+  font-family: 'BaseNeueTrial';
+  src: url('/fonts/BASENEUETRIAL-CONDBOLDOBLIQ.TTF') format('truetype');
+  font-weight: 700; /* Bold */
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BaseNeueTrial';
+  src: url('/fonts/BASENEUETRIAL-CONDEXTBDOBLIQ.TTF') format('truetype');
+  font-weight: 800; /* Extra-bold */
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BaseNeueTrial';
+  src: url('/fonts/BASENEUETRIAL-CONDLIGHTOBLIQ.TTF') format('truetype');
+  font-weight: 300; /* Light */
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BaseNeueTrial';
+  src: url('/fonts/BASENEUETRIAL-CONDOBLIQ.TTF') format('truetype');
+  font-weight: 400; /* Regular */
+  font-style: italic;
+  font-display: swap;
+}
+.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: all ease .4s;
+}
+#myearth {
+	width: 100%;
+	height: 100vh;
+	max-height: 100vw;
+	opacity: 0;
+	transition: all 1.5s ease-in;
+}
+
+#myearth.earth-ready {
+	opacity: 1;
+}
+
+#myearth::before {
+	content: none;
+}
+#myearth.shift-left {
+  transform: translateX(-50%) scale(1.25);
+}
+
+
+/* background glow */
+
+#glow {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 100%;
+	max-width: 70vh;
+	height: 70vh;
+	max-height: 100vw;
+	transform: translate(-50%, -50%);
+	background: radial-gradient(ellipse at center, rgba(0, 255, 227, 0.00) 45%,rgba(0, 255, 227, 0.1) 50%,rgba(0, 255, 227, 0.4) 58%,rgba(0, 255, 227, 0.0) 65%);
+	z-index: 1001;
+	pointer-events: none;
+}
+/* header */
+.header{
+	width: 100%;
+	height: 15vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+.heading{
+	font-size: 4vw;
+	font-family: 'BaseNeueTrial';
+	color: #fff;
+	font-weight: 800;
+	text-align: center;
+	line-height: 1;
+}
+.sub-heading{
+	font-size: 2vw;
+	font-family: 'BaseNeueTrial';
+	color: #01ddc6;
+	font-weight: 400;
+	text-align: center;
+}
+
+/* swiper */
+
+    body {
+      margin: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #vertical-swiper,#asia-swiper,#europe-swiper,#northamerica-swiper,#southamerica-swiper,#africa-swiper {
+	  position: absolute;
+      width: 30vw;
+      height: 60vh;
+	  right: 2vw;
+	  top: 15vw;
+    }
+
+    #vertical-swiper .swiper-slide,#europe-swiper .swiper-slide,#northamerica-swiper .swiper-slide,#southamerica-swiper .swiper-slide,#africa-swiper .swiper-slide {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      font-size: 1.1rem;
+      font-family: 'baseneuetrial';
+      color: #fff;
+      transition: transform 0.3s, opacity 0.3s;
+      border-radius: 12px;
+    }
+	    #asia-swiper .swiper-slide {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      font-size: 1.1rem;
+      font-family: 'baseneuetrial';
+      color: #fff;
+      transition: transform 0.3s, opacity 0.3s;
+      border-radius: 12px;
+    }
+
+	#swiper-back{
+    	position: absolute;
+    	width: 1.5vw;
+		height: 1.5vw;
+		top: 14vw;
+		right: 35vw;
+    	z-index: 10;
+	}
+    /* Highlight the active centered slide */
+    .swiper-slide-active {
+      transform: scale(1.1);
+      opacity: 1;
+      /* box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4); */
+      z-index: 10;
+    }
+
+	.swiper-patch{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(to top,#0f1720,#0f172000,#0f1720);
+		z-index: 10;
+	}
+
+		/* Default style for all slides */
+	.swiper-slide {
+	  opacity: 0.2; /* 1st and 5th (default lowest) */
+	  transition: all 0.3s ease;
+	}
+
+	/* Active center slide */
+	.swiper-slide-active {
+	  opacity: 1;
+	}
+
+	/* Previous and next (2nd and 4th) */
+	.swiper-slide-prev,
+	.swiper-slide-next {
+	  opacity: 0.6;
+	}
+
+    #vertical-swiper .swiper-slide-active .regions span,#asia-swiper .swiper-slide-active .country span,#europe-swiper .swiper-slide-active .country span,#northamerica-swiper .swiper-slide-active .country span,#southamerica-swiper .swiper-slide-active .country span,#southamerica-swiper .swiper-slide-active .country span,#africa-swiper .swiper-slide-active .country span {
+        color: #01ddc6;
+		opacity: 1;
+		font-family: 'BaseNeueTrial';
+		font-style: italic;
+		font-weight: 700;
+		font-size: 2vw;
+		letter-spacing: 1px;
+    }
+
+    .regions span, .country span {
+        font-size: 1.25vw;
+        font-weight: 100;
+        color: #fff;
+		opacity: 0.3;
+		font-family: 'BaseNeueTrial';
+		font-style: italic;
+		font-weight: 400;
+		transition: all ease .3s;
+    }
+	.back-btn{
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 2.5vw;
+		height: 2.5vw;
+		background: url('/images/back-arrow.svg') no-repeat center center;
+		background-size: contain;
+		cursor: pointer;
+		z-index: 20;
+	}
+
+	/* countries */
+	#countries {
+    position: absolute;
+    right: 2vw;
+    width: 45vw;
+    height: 50vh;
+    border: 1px solid #01ddc6;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    gap:1vw;
+		}
+	.country-boxes{
+		position: absolute;
+		width: 100%;
+		height: auto;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1vw;
+		bottom: 0;
+	}
+	.country-box{
+		width: 11vw;
+		height: 7vw;
+		background-color: #fff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.country-box img{
+		height: 70%;
+		width: auto;
+		max-width: 80%;
+	}
+	.logo-back-btn{
+    position: absolute;
+    top: -5vw;
+    left: 0vw;
+    width: 2vw;
+    height: auto;
+    z-index: 10;
+	}
