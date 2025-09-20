@@ -55,17 +55,21 @@ let highlightMarker = null;
       return;
     }
 
-     myearth = new Earth('myearth', {
-      location: { lat: 20, lng: 20 },
-      light: 'none',
-      transparent: true,
-      autoRotate: true,
-      autoRotateSpeed: 1.2,
-      autoRotateStart: 2000,
-      mapImage: 'hologram/hologram-map-01.svg'
-    });
+myearth = new Earth('myearth', {
+  location: { lat: 20, lng: 20 },
+  light: 'none',
+  transparent: true,
+  autoRotate: true,
+  autoRotateSpeed: 1.2,
+  autoRotateStart: 2000,
+  mapImage: 'hologram/hologram-map-01.svg',
+  zoom: 1.0,   
+  minZoom: 0.8,
+  maxZoom: 5.0 
+});
 
 
+});
     // highlight helper (if Earth supports addOverlay)
    function highlightCountry(loc) {
   try {
@@ -97,7 +101,7 @@ function waitForGoTo(timeout = 3000) {
 }
 
     console.log('Setup complete. Click a slide to fly the globe.');
-  }); // window.load
+
 	
     
     
@@ -108,7 +112,6 @@ function waitForGoTo(timeout = 3000) {
 
 
 
-  document.addEventListener("DOMContentLoaded", function () {
 
   // Function to change the subheading based on the clicked region
   function updateSubheading(region) {
@@ -168,23 +171,42 @@ document.querySelector('#vertical-swiper').addEventListener('click', async (e) =
     countryEl.addEventListener('click', async (e) => {
       e.preventDefault(); // prevent link reload
 
-      const countryName = (countryEl.textContent || '').trim().toLowerCase();
+const countryName = (countryEl.textContent || '').trim().toLowerCase();
 
-      // --- Globe interaction ---
-      if (myearth) {
-        const loc = countriesLookup[countryName];
-        if (loc) {
-          try {
-            myearth.autoRotate = false; // stop globe rotation
-            await waitForGoTo();
-            myearth.goTo(loc, { relativeDuration: 2000, approachAngle: 20 });
-            highlightCountry(loc);
-          } catch (err) {
-            console.error(err);
-          }
-        }
+if (myearth) {
+  const loc = countriesLookup[countryName];
+  if (loc) {
+    try {
+      // Stop autorotation when clicking any country
+      myearth.autoRotate = false;
+
+      await waitForGoTo();
+
+      // Fly to the country
+      myearth.goTo(loc, { relativeDuration: 2000, approachAngle: 20, zoom: 5 });
+      highlightCountry(loc);
+
+      // 👇 Special rule just for India
+      if (countryName === "india") {
+        setTimeout(() => {
+          myearth.autoRotate = false; // ensure globe stays paused at India
+        }, 2200); // after goTo finishes
       }
 
+    } catch (err) {
+      console.error(err);
+    }
+  }
+}
+ // Animate globe shift
+  const globe = document.getElementById("myearth");
+  globe.classList.add("shifted");
+
+  // Wait until the transform finishes, then show #countries
+  setTimeout(() => {
+    country.classList.remove("hidden");
+    country.classList.add("visible");
+  }, 1000); // matches transition time
       
 
 
@@ -209,24 +231,26 @@ document.querySelector('#vertical-swiper').addEventListener('click', async (e) =
     });
   });
 
-  // Optional: Add a back button for country-boxes
+  
   document.querySelectorAll('.country-boxes').forEach(box => {
     const backBtn = document.querySelector('.logo-back-btn');
     backBtn.textContent = 'Back';
     backBtn.classList.add('back-btn-country');
     box.prepend(backBtn);
 
-    backBtn.addEventListener('click', () => {
-      
-      country.classList.add('hidden');
-      box.classList.add('hidden');
-      document.getElementById('vertical-swiper').classList.remove('hidden');
-      if (myearth) {
-        myearth.autoRotate = true;
-        myearth.autoRotateSpeed = 1; // normal speed
-      }
-    });
+backBtn.addEventListener('click', () => {
+  country.classList.add('hidden');
+  country.classList.remove('visible');
+
+  const globe = document.getElementById("myearth");
+  globe.classList.remove("shifted");
+
+  document.getElementById('vertical-swiper').classList.remove('hidden');
+
+  if (myearth) {
+    myearth.autoRotate = true;
+    myearth.autoRotateSpeed = 1;
+  }
+});
   });
 
-
-});
