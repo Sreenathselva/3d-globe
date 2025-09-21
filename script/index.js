@@ -125,9 +125,23 @@ function highlightSVGCountry(countryId, loc) {
   const svgString = serializer.serializeToString(svg);
   const svgDataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
 
-  // Remove the old globe canvas
+  // Remove the old globe canvas but preserve the glow
   const globeContainer = document.getElementById('myearth');
+  const glowElement = document.getElementById('glow');
+  
+  // Store the glow if it exists
+  if (glowElement) {
+    glowElement.remove();
+  }
+  
   globeContainer.innerHTML = '';
+  
+  // Re-add the glow
+  globeContainer.appendChild(glowElement || (() => {
+    const newGlow = document.createElement('div');
+    newGlow.id = 'glow';
+    return newGlow;
+  })());
 
   // Re-create the globe with the new texture and position
   window.myearth = new Earth('myearth', {
@@ -186,54 +200,165 @@ function waitForGoTo(timeout = 3000) {
 
 
 
-  // Function to change the subheading based on the clicked region
-  function updateSubheading(region) {
+  // Function to format region name
+function formatRegionName(region) {
+    // Handle specific cases for proper formatting
+    switch(region.toLowerCase()) {
+        case 'northamerica':
+            return 'North America';
+        case 'southamerica':
+            return 'South America';
+        default:
+            // For other regions, capitalize first letter of each word
+            return region
+                .split(/(?=[A-Z])/)  // Split on capital letters
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+    }
+}
+
+// Function to change the subheading based on the clicked region
+function updateSubheading(region) {
     const heading = document.querySelector('.header h2');
     if (heading) {
-      if (region) {
-        // Capitalize the first letter of the region
-        const formattedRegion = region.charAt(0).toUpperCase() + region.slice(1);
-        heading.innerHTML = `Our global collaborators in ${formattedRegion}`;
-      } else {
-        // Reset to the original text if no region is selected
-        heading.innerHTML = "Our global collaborations";
+        if (region) {
+            const formattedRegion = formatRegionName(region);
+            heading.innerHTML = `Our global collaborations in ${formattedRegion}`;
+        } else {
+            // Reset to the original text if no region is selected
+            heading.innerHTML = "Our global collaborations";
+        }
+    }
+}
+
+  // Common swiper configuration
+  const swiperConfig = {
+    direction: 'vertical',
+    slidesPerView: 5,
+    centeredSlides: true,
+    spaceBetween: 12,
+    mousewheel: {
+      releaseOnEdges: true,
+      sensitivity: 0.5
+    },
+    loop: true,
+    autoplay: false,
+    slideToClickedSlide: false, // Disable clicking to slide
+    keyboard: { enabled: true },
+    speed: 300,
+    slidesPerGroup: 1,
+    followFinger: false, // Prevents the slider from following the finger/mouse
+    longSwipes: false, // Disable long swipes
+    shortSwipes: true, // Enable short swipes
+    touchRatio: 0.5, // Reduce touch sensitivity
+    resistance: true,
+    resistanceRatio: 1, // Maximum resistance
+    preventInteractionOnTransition: true, // Prevent interaction while transitioning
+    // Custom handling of touch events
+    on: {
+      touchStart: function(swiper, event) {
+        swiper.allowSlideNext = true;
+        swiper.allowSlidePrev = true;
+      },
+      touchEnd: function(swiper, event) {
+        // Only move one slide regardless of drag distance
+        const diff = swiper.touches.diff;
+        if (Math.abs(diff) > 0) {
+          if (diff > 0) {
+            swiper.slidePrev();
+          } else {
+            swiper.slideNext();
+          }
+        }
+        // Prevent any additional movements
+        swiper.allowSlideNext = false;
+        swiper.allowSlidePrev = false;
       }
     }
+  };
+
+  // Function to create a swiper with enhanced control
+  function createControlledSwiper(elementId) {
+    const swiper = new Swiper(elementId, swiperConfig);
+    
+    // Add additional touch control
+    swiper.on('touchStart', function() {
+      this.allowSlideNext = true;
+      this.allowSlidePrev = true;
+    });
+
+    swiper.on('touchEnd', function() {
+      const diff = this.touches.diff;
+      if (Math.abs(diff) > 0) {
+        if (diff > 0) {
+          this.slidePrev();
+        } else {
+          this.slideNext();
+        }
+      }
+      this.allowSlideNext = false;
+      this.allowSlidePrev = false;
+    });
+
+    // Add mousewheel control
+    swiper.on('wheel', function() {
+      const diff = this.touches.diff;
+      if (Math.abs(diff) > 0) {
+        if (diff > 0) {
+          this.slidePrev();
+        } else {
+          this.slideNext();
+        }
+      }
+    });
+
+    return swiper;
   }
 
-  const regionSwiper = new Swiper('#vertical-swiper', {  direction: 'vertical',  slidesPerView: 5,      centeredSlides: true,  spaceBetween: 12,  mousewheel: true,  keyboard: { enabled: true },  loop: true,   autoplay: {    delay: 100000,  },});
-  const asiaSwiper = new Swiper('#asia-swiper', { direction: 'vertical', slidesPerView: 5, mousewheel: true,centeredSlides: true, centeredSlides:true, spaceBetween: 12, loop: true });
-  const europeSwiper = new Swiper('#europe-swiper', { direction: 'vertical', slidesPerView: 5, mousewheel: true,centeredSlides: true, centeredSlides:true, spaceBetween: 12, loop: true });
-  const naSwiper = new Swiper('#northamerica-swiper', { direction: 'vertical', slidesPerView: 5, mousewheel: true,centeredSlides: true, centeredSlides:true, spaceBetween: 12, loop: true });
-  const africaSwiper = new Swiper('#africa-swiper', { direction: 'vertical', slidesPerView: 5, mousewheel: true,centeredSlides: true, centeredSlides:true, spaceBetween: 12, loop: true });
-  const southAmericaSwiper = new Swiper('#southamerica-swiper', { direction: 'vertical', slidesPerView: 5, loop: true,centeredSlides: true,mousewheel: true, });
+  // Create all swipers with enhanced control
+  const regionSwiper = createControlledSwiper('#vertical-swiper');
+  const asiaSwiper = createControlledSwiper('#asia-swiper');
+  const europeSwiper = createControlledSwiper('#europe-swiper');
+  const naSwiper = createControlledSwiper('#northamerica-swiper');
+  const africaSwiper = createControlledSwiper('#africa-swiper');
+  const southAmericaSwiper = createControlledSwiper('#southamerica-swiper');
   // Region click → show the right country swiper
 document.querySelector('#vertical-swiper').addEventListener('click', async (e) => {
   const regionLink = e.target.closest('.regions');
   if (!regionLink) return;
 
   // Get region from clicked element
-  const region = (regionLink.dataset.region || '').trim().toLowerCase();
+  const region = (regionLink.dataset.region || '').trim();
+
+  // Update the subheading with properly formatted region name
+  updateSubheading(region);
 
   // Hide region swiper first
   document.getElementById('vertical-swiper').classList.add('hidden');
 
   // Show selected region swiper
-  if (region === "asia") {
+  if (region.toLowerCase() === "asia") {
     document.getElementById("asia-swiper").classList.remove("hidden");
-  } else if (region === "europe") {
+  } else if (region.toLowerCase() === "europe") {
     document.getElementById("europe-swiper").classList.remove("hidden");
-  } else if (region === "northamerica") {
+  } else if (region.toLowerCase() === "northamerica") {
     document.getElementById("northamerica-swiper").classList.remove("hidden");
-  } else if (region === "africa") {
+  } else if (region.toLowerCase() === "africa") {
     document.getElementById("africa-swiper").classList.remove("hidden");
-  } else if (region === "southamerica") {
+  } else if (region.toLowerCase() === "southamerica") {
     document.getElementById("southamerica-swiper").classList.remove("hidden");
   }
 });
 // backbutton for swipers
  document.querySelectorAll('.back-btn').forEach(btn => {
       btn.addEventListener('click', () => {
+        // Reset the header subheading
+        const headerSubheading = document.querySelector('.header h2');
+        if (headerSubheading) {
+          headerSubheading.textContent = "Our global collaborations";
+        }
+
+        // Hide current swiper and show main region swiper
         btn.parentElement.classList.add('hidden');
         document.getElementById('vertical-swiper').classList.remove('hidden');
       });
@@ -270,10 +395,17 @@ if (headerDiv) {
   headerDiv.style.display = 'none';
 }
 
+// Function to format country name for display
+function formatCountryDisplay(name) {
+  if (!name) return '';
+  const formatted = name.trim();
+  return `In ${formatted}`;
+}
+
 // Update the subheading in the countries div
 const countriesSubheading = document.querySelector('#countries .sub-heading');
 if (countriesSubheading) {
-  countriesSubheading.textContent = `Our global collaborations in ${countryName}`;
+  countriesSubheading.textContent = formatCountryDisplay(countryName);
 }
 
 if (myearth) {
@@ -356,25 +488,33 @@ if (myearth) {
       if (targetBox) {
         targetBox.classList.remove('hidden');
       }
+            // Make sure back button is visible
+      const backBtn = document.querySelector('.logo-back-btn');
+      if (backBtn) {
+        backBtn.style.display = 'block';
+      }
       console.log('Showing country box for:', countryNameLower); // Debug log
     });
   });
 
   
   document.querySelectorAll('.country-boxes').forEach(box => {
-    const backBtn = document.querySelector('.logo-back-btn');
-    backBtn.textContent = 'Back';
-    backBtn.classList.add('back-btn-country');
-    box.prepend(backBtn);
+    
+      const backBtn = document.querySelector('.logo-back-btn');
+
 
     backBtn.addEventListener('click', () => {
+        const headerSubheading = document.querySelector('.header h2');
+        if (headerSubheading) {
+          headerSubheading.textContent = "Our global collaborations";
+        }
       country.classList.add('hidden');
       country.classList.remove('visible');
 
       // Show the header div again when going back
       const headerDiv = document.querySelector('.header');
       if (headerDiv) {
-        headerDiv.style.display = 'block';
+        headerDiv.style.display = 'flex';
       }
 
       // Reset the countries subheading back to original
@@ -396,8 +536,22 @@ if (myearth) {
       
       // Clear and recreate the globe
       const globeContainer = document.getElementById('myearth');
+      const glowElement = document.getElementById('glow');
+      
+      // Store the glow if it exists
+      if (glowElement) {
+        glowElement.remove();
+      }
+      
       globeContainer.innerHTML = '';
       globeContainer.classList.remove('shifted'); // Remove shifted class to center the globe
+      
+      // Re-add the glow
+      globeContainer.appendChild(glowElement || (() => {
+        const newGlow = document.createElement('div');
+        newGlow.id = 'glow';
+        return newGlow;
+      })());
       
       // Create new globe instance with default settings
       window.myearth = new Earth('myearth', {
