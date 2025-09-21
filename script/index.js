@@ -78,44 +78,87 @@ let highlightMarker = null;
       
   window.addEventListener('load', () => {
     // countries map (country-level center points)
+ const svg = document.getElementById('worldMap');
+  if (!svg) {
+    console.error('SVG with id "worldMap" not found.');
+    return;
+  }
 
-    // --- sanity check Earth lib
-    if (typeof Earth === 'undefined') {
-       console.error('Earth library not found.');
-      return;
-    }
+  // Serialize SVG to string
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svg);
 
-myearth = new Earth('myearth', {
-  location: { lat: 20, lng: 20 },
-  light: 'none',
-  transparent: true,
-  autoRotate: true,
-  autoRotateSpeed: 1.2,
-  autoRotateStart: 2000,
-  mapImage: 'hologram/hologram-map-01.svg',
-  zoom: 1.0,   
-  minZoom: 0.8,
-  maxZoom: 5.0 
-});
+  // Encode as data URI
+  const svgDataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
 
+  // Initialize Earth.js with the SVG data URI
+  myearth = new Earth('myearth', {
+    location: { lat: 20, lng: 20 },
+    light: 'none',
+    transparent: true,
+    autoRotate: true,
+    autoRotateSpeed: 1.2,
+    autoRotateStart: 2000,
+    mapImage: svgDataUri, // Use the inline SVG as texture
+    zoom: 1.0,
+    minZoom: 0.8,
+    maxZoom: 5.0
+  });
 
 });
     // highlight helper (if Earth supports addOverlay)
-   function highlightCountry(loc) {
-  try {
-    if (!myearth || typeof myearth.addOverlay !== 'function') return;
-    if (highlightMarker && highlightMarker.remove) highlightMarker.remove();
-    highlightMarker = myearth.addOverlay({
-      location: loc,
-      mesh: 'marker',
-      color: 'rgba(0,255,150,0.8)',
-      scale: 2,
-      transparent: true,
-      depthTest: false
-    });
-  } catch (err) {
-    console.error(err);
+function highlightSVGCountry(countryId, loc) {
+  // Remove highlight from all paths
+  document.querySelectorAll('#worldMap path').forEach(path => {
+    path.classList.remove('country-highlight');
+  });
+
+  // Highlight the selected country
+  const path = document.querySelector(`#worldMap path[id="${countryId}"]`);
+  if (path) {
+    path.classList.add('country-highlight');
   }
+
+  // Serialize the SVG and create a new data URI
+  const svg = document.getElementById('worldMap');
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svg);
+  const svgDataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+
+  // Remove the old globe canvas
+  const globeContainer = document.getElementById('myearth');
+  globeContainer.innerHTML = '';
+
+  // Re-create the globe with the new texture and position
+  window.myearth = new Earth('myearth', {
+    location: loc ? { lat: loc.lat, lng: loc.lng } : { lat: 20, lng: 20 },
+    light: 'none',
+    transparent: true,
+    autoRotate: false, // Don't auto-rotate when showing a country
+    autoRotateSpeed: 0,
+    autoRotateStart: 0,
+    mapImage: svgDataUri,
+    zoom: 1.0,
+    minZoom: 0.8,
+    maxZoom: 5.0
+  });
+
+  // Wait for the new globe to be ready, then go to the location and pause
+  waitForGoTo().then(() => {
+    if (typeof loc === 'object' && loc && typeof loc.lat === 'number' && typeof loc.lng === 'number') {
+      myearth.goTo(loc, { relativeDuration: 2000, approachAngle: 20, zoom: 5 });
+      setTimeout(() => {
+        myearth.autoRotate = false;
+        myearth.draggable = false;
+        myearth.scrollable = false;
+      }, 2200);
+    } else {
+      // Always pause globe if no location
+      myearth.autoRotate = false;
+      myearth.draggable = false;
+      myearth.scrollable = false;
+    }
+  });
 }
 
     // helper to wait until goTo is available (polling)
@@ -201,8 +244,25 @@ document.querySelector('#vertical-swiper').addEventListener('click', async (e) =
     countryEl.addEventListener('click', async (e) => {
       e.preventDefault(); // prevent link reload
 
-const countryName = (countryEl.textContent || '').trim();
-const countryNameLower = countryName.toLowerCase();
+      const countryName = (countryEl.textContent || '').trim();
+      const countryNameLower = countryName.toLowerCase();
+
+      // Get location data for the country
+      let loc = countries[countryName] || countries[countryNameLower];
+      if (!loc) {
+        const countryKey = Object.keys(countries).find(
+          key => key.toLowerCase() === countryNameLower
+        );
+        if (countryKey) {
+          loc = countries[countryKey];
+        }
+      }
+
+      const countryId = countryName.replace(/\s+/g, '');
+      if (loc) {
+        // Pass the location to highlightSVGCountry
+        highlightSVGCountry(countryId, loc);
+      }
 
 // Hide the header div when a country is clicked
 const headerDiv = document.querySelector('.header');
@@ -213,7 +273,7 @@ if (headerDiv) {
 // Update the subheading in the countries div
 const countriesSubheading = document.querySelector('#countries .sub-heading');
 if (countriesSubheading) {
-  countriesSubheading.textContent = `Our global collaborations - ${countryName}`;
+  countriesSubheading.textContent = `Our global collaborations in ${countryName}`;
 }
 
 if (myearth) {
@@ -252,7 +312,7 @@ if (myearth) {
       
       // Fly to the country
       myearth.goTo(loc, { relativeDuration: 2000, approachAngle: 20, zoom: 5 });
-      highlightCountry(loc);
+      // highlightCountry(loc);
 
       // Ensure the globe stays stopped and locked after animation
       setTimeout(() => {
@@ -307,36 +367,53 @@ if (myearth) {
     backBtn.classList.add('back-btn-country');
     box.prepend(backBtn);
 
-backBtn.addEventListener('click', () => {
-  country.classList.add('hidden');
-  country.classList.remove('visible');
+    backBtn.addEventListener('click', () => {
+      country.classList.add('hidden');
+      country.classList.remove('visible');
 
-  // Show the header div again when going back
-  const headerDiv = document.querySelector('.header');
-  if (headerDiv) {
-    headerDiv.style.display = 'block';
-  }
+      // Show the header div again when going back
+      const headerDiv = document.querySelector('.header');
+      if (headerDiv) {
+        headerDiv.style.display = 'block';
+      }
 
-  // Reset the countries subheading back to original
-  const countriesSubheading = document.querySelector('#countries .sub-heading');
-  if (countriesSubheading) {
-    countriesSubheading.textContent = 'Our global collaborations';
-  }
+      // Reset the countries subheading back to original
+      const countriesSubheading = document.querySelector('#countries .sub-heading');
+      if (countriesSubheading) {
+        countriesSubheading.textContent = 'Our global collaborations';
+      }
 
-  const globe = document.getElementById("myearth");
-  globe.classList.remove("shifted");
+      // Remove highlight from all paths and reset the SVG
+      document.querySelectorAll('#worldMap path').forEach(path => {
+        path.classList.remove('country-highlight');
+      });
 
-  document.getElementById('vertical-swiper').classList.remove('hidden');
+      // Re-serialize the SVG (now without highlights) and recreate the globe
+      const svg = document.getElementById('worldMap');
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(svg);
+      const svgDataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+      
+      // Clear and recreate the globe
+      const globeContainer = document.getElementById('myearth');
+      globeContainer.innerHTML = '';
+      globeContainer.classList.remove('shifted'); // Remove shifted class to center the globe
+      
+      // Create new globe instance with default settings
+      window.myearth = new Earth('myearth', {
+        location: { lat: 20, lng: 20 },
+        light: 'none',
+        transparent: true,
+        autoRotate: true,
+        autoRotateSpeed: 1.2,
+        autoRotateStart: 2000,
+        mapImage: svgDataUri,
+        zoom: 1.0,
+        minZoom: 0.8,
+        maxZoom: 5.0
+      });
 
-  if (myearth) {
-    // Re-enable user interaction
-    myearth.draggable = true;
-    myearth.scrollable = true;
-    
-    // Restart auto-rotation
-    myearth.autoRotate = true;
-    myearth.autoRotateSpeed = 1;
-  }
-});
+      document.getElementById('vertical-swiper').classList.remove('hidden');
+    });
   });
 
